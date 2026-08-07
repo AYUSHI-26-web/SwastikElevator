@@ -10,6 +10,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { apiUrl } from '@/lib/api';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -70,7 +71,7 @@ const Contact = () => {
     setIsSubmitting(true);
     
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch(apiUrl("/api/contact"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

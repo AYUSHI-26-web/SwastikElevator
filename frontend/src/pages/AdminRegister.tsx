@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { apiUrl } from '@/lib/api';
 
 const AdminRegister = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ const AdminRegister = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`/api/admin/register`, {
+      const response = await fetch(apiUrl("/api/admin/register"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

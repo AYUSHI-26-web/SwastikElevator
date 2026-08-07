@@ -1,5 +1,5 @@
 const express = require('express');
-const { getEmailQueueStats } = require('../services/emailQueueService');
+const { getEmailQueueStats, processPendingEmailJobs } = require('../services/emailQueueService');
 const {
   sendMailOptions,
   getMailConfig,
@@ -21,6 +21,36 @@ router.get('/email-queue/stats', async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch email queue stats',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    });
+  }
+});
+
+// Intended to be triggered by Vercel Cron (or an external scheduler) since serverless
+// functions cannot run a persistent setInterval-based worker.
+router.get('/email-queue/process', async (req, res) => {
+  const cronSecret = process.env.CRON_SECRET;
+  if (cronSecret) {
+    const providedSecret = req.headers.authorization === `Bearer ${cronSecret}`
+      ? cronSecret
+      : req.query.secret;
+    if (providedSecret !== cronSecret) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+  }
+
+  try {
+    const result = await processPendingEmailJobs(10);
+    return res.status(200).json({
+      success: true,
+      data: result,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Failed to process email queue:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to process email queue',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined,
     });
   }

@@ -18,6 +18,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { apiUrl } from '@/lib/api';
 
 const Services = () => {
   const [formData, setFormData] = useState({
@@ -145,7 +146,7 @@ const Services = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/services", {
+      const response = await fetch(apiUrl("/api/services"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,69 +1,17 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
-const express = require('express');
-const cors = require('cors');
+const app = require('./app');
 const connectDB = require('./config/db');
+const { preflightEmailAuth } = require('./services/emailService');
+const { processPendingEmailJobs } = require('./services/emailQueueService');
 const { getConnectionStatus } = require('./config/db');
-const contactRoutes = require('./routes/contactRoutes');
-const authRoutes = require('./routes/authRoutes');
-const opsRoutes = require('./routes/opsRoutes');
-const serviceRoutes = require('./routes/serviceRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const contactInfoRoutes = require('./routes/contactInfoRoutes');
-const { preflightEmailAuth, getEmailAuthStatus } = require('./services/emailService');
-const { processPendingEmailJobs, getEmailQueueStats } = require('./services/emailQueueService');
 
-const app = express();
 const PORT = process.env.PORT || 5000;
 const EMAIL_QUEUE_INTERVAL_MS = 60 * 1000;
 
 let queueWorkerTimer = null;
 let queueWorkerRunning = false;
-
-app.use(cors());
-app.use(express.json());
-
-app.use('/api/contact', contactRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/ops', opsRoutes);
-app.use('/api/services', serviceRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/contact-info', contactInfoRoutes);
-
-app.get('/health', async (req, res) => {
-  let queueStats = { pending: 0, processing: 0, sent: 0, failed: 0 };
-
-  try {
-    queueStats = await getEmailQueueStats();
-  } catch (error) {
-    console.error('Health check: failed to fetch queue stats:', error.message);
-  }
-
-  const emailAuth = getEmailAuthStatus().status || 'unknown';
-
-  res.json({
-    status: 'ok',
-    database: getConnectionStatus() ? 'connected' : 'disconnected',
-    emailAuth,
-    emailQueuePending: queueStats.pending,
-    emailQueueFailed: queueStats.failed,
-    timestamp: new Date().toISOString(),
-  });
-});
-
-app.get('/', (req, res) => {
-  res.send('Contact Form Backend is Running!');
-});
-
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({
-    success: false,
-    message: 'Internal server error',
-    error: process.env.NODE_ENV === 'development' ? err.message : undefined,
-  });
-});
 
 const runQueueWorkerCycle = async () => {
   if (queueWorkerRunning || !getConnectionStatus()) {
