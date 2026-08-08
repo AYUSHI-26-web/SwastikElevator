@@ -8,24 +8,6 @@ const ElevatorEstimator = () => {
   const [buildingType, setBuildingType] = useState<'residential' | 'commercial' | 'hospital'>('residential');
   const [floors, setFloors] = useState<number>(4);
 
-  // Simple pricing calculation logic for quick estimate display
-  const getEstimatedCost = () => {
-    if (serviceCategory === 'amc') {
-      const baseMonthly = buildingType === 'commercial' ? 3500 : buildingType === 'hospital' ? 4500 : 2500;
-      const monthlyRate = baseMonthly + (floors - 2) * 400;
-      return `₹${(monthlyRate).toLocaleString('en-IN')}/month`;
-    }
-    if (serviceCategory === 'modernization') {
-      const baseCost = buildingType === 'commercial' ? 350000 : buildingType === 'hospital' ? 450000 : 280000;
-      const cost = baseCost + (floors - 2) * 25000;
-      return `₹${(cost / 100000).toFixed(2)} Lakhs onwards`;
-    }
-    // New Installation
-    const baseCost = buildingType === 'commercial' ? 850000 : buildingType === 'hospital' ? 1100000 : 650000;
-    const cost = baseCost + (floors - 2) * 65000;
-    return `₹${(cost / 100000).toFixed(2)} Lakhs onwards`;
-  };
-
   return (
     <section className="py-16 bg-slate-100/80 text-slate-900 relative overflow-hidden border-y border-slate-200/80">
       {/* Background glowing shapes */}
@@ -44,10 +26,10 @@ const ElevatorEstimator = () => {
             <span>Instant Estimator</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4">
-            Calculate Your <span className="bg-gradient-to-r from-blue-700 to-amber-600 bg-clip-text text-transparent">Elevator Project Cost</span>
+            Plan Your <span className="bg-gradient-to-r from-blue-700 to-amber-600 bg-clip-text text-transparent">Elevator Project</span>
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto text-sm sm:text-base">
-            Select your building parameters to get an instant cost range estimate for new installation, AMC maintenance, or modernization.
+            Select your building parameters and request a free on-site technical survey for new installation, AMC maintenance, or modernization.
           </p>
         </motion.div>
 
@@ -135,17 +117,17 @@ const ElevatorEstimator = () => {
             </div>
           </div>
 
-          {/* Estimate Display Box */}
+          {/* Quote CTA Box */}
           <div className="lg:col-span-5 bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-800 rounded-2xl p-6 sm:p-8 flex flex-col justify-between items-center text-center shadow-xl text-white">
             <div>
               <span className="text-xs font-semibold text-blue-200 uppercase tracking-widest block mb-1">
-                Estimated Price Range
+                Free Technical Consultation
               </span>
-              <div className="text-3xl sm:text-4xl font-extrabold text-amber-400 my-3 tracking-tight">
-                {getEstimatedCost()}
+              <div className="text-2xl sm:text-3xl font-extrabold text-amber-400 my-3 tracking-tight">
+                Get a Custom Quote
               </div>
               <p className="text-xs text-slate-300 leading-relaxed mb-6">
-                *Estimated figure including standard safety components & installation. Final quote delivered post on-site technical inspection.
+                Share your building details and our engineers will prepare a tailored proposal after an on-site technical inspection.
               </p>
 
               <ul className="text-left space-y-2 text-xs text-slate-200 mb-6 bg-slate-950/40 p-4 rounded-xl border border-white/10">

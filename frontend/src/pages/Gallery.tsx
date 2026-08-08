@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom';
 
 import luxuryCabin from '@/assets/luxury-cabin.jpg';
 import glassElevator from '@/assets/glass-elevator.jpg';
-import serviceTeam from '@/assets/service-team.jpg';
+import serviceTeam from '@/assets/service-team-v2.jpg';
 import liftInstallation from '@/assets/lift-installation.jpg';
 import liftModern from '@/assets/lift-modern.jpg';
 import techMaintenance from '@/assets/tech-maintenance.jpg';
@@ -49,13 +49,13 @@ const Gallery = () => {
     },
     {
       id: 2,
-      title: '360° Architectural Panoramic Glass Lift',
+      title: '360Â° Architectural Panoramic Glass Lift',
       category: 'glass',
       categoryLabel: 'Panoramic Glass',
       image: glassElevator,
       location: 'Corporate Plaza, Civil Lines',
       description: 'Hexagonal curved laminated safety glass elevator designed for scenic 360-degree viewing with whisper-quiet VVVF drive.',
-      features: ['360° Panoramic View', 'Ultra-Quiet <45dB', 'VVVF Energy Saving']
+      features: ['360Â° Panoramic View', 'Ultra-Quiet <45dB', 'VVVF Energy Saving']
     },
     {
       id: 3,
@@ -147,7 +147,7 @@ const Gallery = () => {
             </h1>
 
             <p className="text-base sm:text-lg text-slate-200 font-light leading-relaxed">
-              Explore real installation photos, luxury cabin craftmanship, 360° panoramic glass lifts, microprocessor control panels, and field engineering in action across Kanpur & North India.
+              Explore real installation photos, luxury cabin craftmanship, 360Â° panoramic glass lifts, microprocessor control panels, and field engineering in action across Kanpur & North India.
             </p>
           </motion.div>
         </div>

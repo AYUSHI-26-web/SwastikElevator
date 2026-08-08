@@ -14,8 +14,8 @@ exports.getContactInfo = async (req, res) => {
       {
         icon: 'Mail',
         title: 'Email',
-        details: ['himanchalpratapsingh17@gmail.com'],
-        action: 'mailto:himanchalpratapsingh17@gmail.com',
+        details: ['himanchalenterprises6@gmail.com'],
+        action: 'mailto:himanchalenterprises6@gmail.com',
         actionText: 'Send Email'
       },
       {

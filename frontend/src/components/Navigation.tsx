@@ -53,11 +53,11 @@ const Navigation = () => {
             <span className="hidden md:inline text-slate-700">•</span>
 
             <a
-              href="mailto:himanchalpratapsingh17@gmail.com"
+              href="mailto:himanchalenterprises6@gmail.com"
               className="hidden md:flex items-center gap-1.5 hover:text-blue-400 transition-colors"
             >
               <Mail className="w-3.5 h-3.5 text-blue-400" />
-              <span className="truncate max-w-[200px]">himanchalpratapsingh17@gmail.com</span>
+              <span>himanchalenterprises6@gmail.com</span>
             </a>
 
             <span className="hidden lg:inline-flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/40">

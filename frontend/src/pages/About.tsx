@@ -21,7 +21,7 @@ import {
   Briefcase
 } from 'lucide-react';
 
-import serviceTeam from '@/assets/service-team.jpg';
+import serviceTeam from '@/assets/service-team-v2.jpg';
 import luxuryCabin from '@/assets/luxury-cabin.jpg';
 import glassElevator from '@/assets/glass-elevator.jpg';
 import liftModern from '@/assets/lift-modern.jpg';
@@ -55,7 +55,7 @@ const About = () => {
       badge: 'Executive Management',
       icon: Briefcase,
       expertise: ['Operations Leadership', 'Client Relations', 'Safety Governance', 'Project Strategy'],
-      stats: '1+ Year Leadership'
+      stats: '2+ Years Leadership'
     },
     {
       name: 'Er. Ragvender Singh',
@@ -82,7 +82,7 @@ const About = () => {
       title: 'Architectural Panoramic Glass Lifts',
       desc: '360-degree panoramic glass elevators crafted for shopping malls, luxury hotels, and private villa duplexes with smooth VVVF drives.',
       image: glassElevator,
-      tag: 'Panoramic 360°',
+      tag: 'Panoramic 360Â°',
       specs: ['Pitless/Low Pit Design', 'Whisper-Quiet <45dB', 'Energy Saving VVVF']
     },
     {
@@ -146,7 +146,7 @@ const About = () => {
                   <span className="text-slate-300 text-xs font-medium">Rapid AMC Team</span>
                 </div>
                 <div className="bg-slate-900/80 border border-slate-800/90 p-3 rounded-2xl backdrop-blur-md">
-                  <span className="text-amber-400 font-extrabold text-xl block">1+ Year</span>
+                  <span className="text-amber-400 font-extrabold text-xl block">2+ Years</span>
                   <span className="text-slate-300 text-xs font-medium">Industry Trust</span>
                 </div>
               </div>
@@ -306,7 +306,7 @@ const About = () => {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent flex items-end p-4">
                     <span className="text-white font-bold text-xs bg-amber-600/80 px-2.5 py-1 rounded-md backdrop-blur-sm">
-                      360° Panoramic Glass
+                      360Â° Panoramic Glass
                     </span>
                   </div>
                 </div>

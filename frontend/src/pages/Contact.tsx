@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import serviceTeam from '@/assets/service-team.jpg';
+import serviceTeam from '@/assets/service-team-v2.jpg';
 import heroElevator from '@/assets/hero-elevator.jpg';
 import { 
   Phone, 
@@ -262,7 +262,7 @@ const Contact = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <h4 className="text-amber-400 font-extrabold text-sm">Rapid Response Unit</h4>
-                      <p className="text-slate-300 text-xs font-light">Kanpur • Lucknow • Surrounding Regions</p>
+                      <p className="text-slate-300 text-xs font-light">Kanpur â€¢ Lucknow â€¢ Surrounding Regions</p>
                     </div>
                     <div className="w-3 h-3 rounded-full bg-emerald-500 animate-ping shrink-0" />
                   </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Phone, MessageSquare, ArrowUp } from 'lucide-react';
+import { MessageSquare, ArrowUp } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const FloatingActions = () => {
@@ -55,22 +55,6 @@ const FloatingActions = () => {
       >
         <MessageSquare className="w-5 h-5 group-hover:animate-bounce" />
         <span className="hidden sm:inline">WhatsApp Us</span>
-      </motion.a>
-
-      {/* 24/7 Emergency Call Button */}
-      <motion.a
-        href="tel:+918318326578"
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.95 }}
-        className="pointer-events-auto relative flex items-center gap-2 px-4 py-3 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-xl shadow-amber-500/30 font-bold text-sm hover:from-amber-400 hover:to-orange-500 transition-all"
-        aria-label="24/7 Emergency Call"
-      >
-        <span className="absolute -top-1 -right-1 flex h-3 w-3">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-        </span>
-        <Phone className="w-5 h-5" />
-        <span className="hidden sm:inline">Emergency Call</span>
       </motion.a>
     </div>
   );

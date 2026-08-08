@@ -101,7 +101,7 @@ const HeroSection = () => {
             </div>
             <div className="flex items-center justify-center space-x-3 text-white/90">
               <Star className="w-6 h-6 text-yellow-400" />
-              <span className="font-medium">1 Year Experience</span>
+              <span className="font-medium">2+ Years Experience</span>
             </div>
           </motion.div>
         </motion.div>

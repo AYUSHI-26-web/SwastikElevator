@@ -7,7 +7,7 @@ import heroImage from "@/assets/hero-elevator.jpg";
 import liftInstallation from "@/assets/lift-installation.jpg";
 import liftMaintenance from "@/assets/lift-maintenance.jpg";
 import liftModern from "@/assets/lift-modern.jpg";
-import serviceTeam from "@/assets/service-team.jpg";
+import serviceTeam from "@/assets/service-team-v2.jpg";
 import luxuryCabin from "@/assets/luxury-cabin.jpg";
 import techMaintenance from "@/assets/tech-maintenance.jpg";
 import glassElevator from "@/assets/glass-elevator.jpg";
@@ -37,7 +37,7 @@ import {
   ChevronRight
 } from "lucide-react";
 
-// ✅ Swiper imports
+// âœ… Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade } from "swiper/modules";
 import "swiper/css";
@@ -62,7 +62,7 @@ const Home = () => {
       role: "Building Manager",
       company: "Tower Heights Residency, Kanpur",
       content:
-        "Swastik Elevator (Himanchal Enterprises) has been maintaining our 4 high-speed residential elevators for over 1+ year. Their 24/7 breakdown response and technical precision are unmatched.",
+        "Swastik Elevator (Himanchal Enterprises) has been maintaining our 4 high-speed residential elevators for over 2+ years. Their 24/7 breakdown response and technical precision are unmatched.",
       rating: 5,
       badge: "Verified Client"
     },
@@ -91,7 +91,7 @@ const Home = () => {
       src: heroImage,
       badge: "A Unit of Himanchal Enterprises",
       title: "Engineered For Safety & Vertical Perfection",
-      subtitle: "Kanpur's Premier Elevator Company — Precision Installation, AMC Maintenance & Modernization",
+      subtitle: "Kanpur's Premier Elevator Company â€” Precision Installation, AMC Maintenance & Modernization",
     },
     {
       src: luxuryCabin,
@@ -118,8 +118,7 @@ const Home = () => {
         "Drive: Energy-saving PMSM Gearless Traction",
         "Cabin: Italian stainless steel & LED mood lighting",
         "Safety: ARD (Automatic Rescue Device) & Infrared Light Curtain"
-      ],
-      priceRange: "Starting from ₹7,50,000"
+      ]
     },
     glass: {
       title: "Panoramic Architectural Glass Lifts",
@@ -127,12 +126,11 @@ const Home = () => {
       image: glassElevator,
       specs: [
         "Design: Circular or Hexagonal Laminated Safety Glass",
-        "View: 180° to 360° Unobstructed Scenic Views",
+        "View: 180Â° to 360Â° Unobstructed Scenic Views",
         "Drive: Ultra-smooth VVVF Variable Frequency Drive",
         "Structure: Stainless steel framework with titanium gold finish",
         "Energy: Up to 40% power saving regenerative system"
-      ],
-      priceRange: "Starting from ₹12,00,000"
+      ]
     },
     hospital: {
       title: "Medical & Stretcher Lifts",
@@ -144,8 +142,7 @@ const Home = () => {
         "Hygiene: Anti-bacterial copper-tinted stainless steel cabin walls",
         "Control: Priority Emergency Over-Ride key switch for medical staff",
         "Backup: Extended emergency battery backup system"
-      ],
-      priceRange: "Starting from ₹9,50,000"
+      ]
     },
     home: {
       title: "Luxury Villa & Home Elevators",
@@ -157,8 +154,7 @@ const Home = () => {
         "Noise: Whisper-quiet operation (<45 dB)",
         "Customization: Custom wooden paneling, marble floor & leather trims",
         "Safety: Child lock & manual emergency lowering valve"
-      ],
-      priceRange: "Starting from ₹6,50,000"
+      ]
     },
     amc: {
       title: "24/7 Comprehensive AMC Service",
@@ -170,8 +166,7 @@ const Home = () => {
         "Parts: 100% Genuine OEM Replacement Components Included",
         "Compliance: Government Lift Inspector Certification Support",
         "Reporting: Digital Service Logs & Performance Health Analytics"
-      ],
-      priceRange: "Starting from ₹2,200/month"
+      ]
     }
   };
 
@@ -319,8 +314,8 @@ const Home = () => {
                     icon: HeadphoneIcon,
                   },
                   {
-                    title: "Competitive Prices",
-                    desc: "Transparent quotes with no hidden charges for parts or site surveys.",
+                    title: "Transparent Quotes",
+                    desc: "Clear proposals with no hidden charges for parts or site surveys.",
                     icon: Zap,
                   },
                 ].map((item) => {
@@ -449,12 +444,6 @@ const Home = () => {
               </ul>
 
               <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 border-t border-slate-200">
-                <div>
-                  <span className="text-xs text-slate-500 block">Pricing Tier</span>
-                  <span className="text-blue-700 font-extrabold text-lg">
-                    {productSeries[activeTab].priceRange}
-                  </span>
-                </div>
                 <Link
                   to="/services"
                   className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/20 flex items-center gap-2 transition-all hover:scale-105"

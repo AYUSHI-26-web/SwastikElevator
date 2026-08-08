@@ -17,7 +17,7 @@ import heroImage from '@/assets/hero-elevator.jpg';
 import liftInstallation from '@/assets/lift-installation.jpg';
 import liftMaintenance from '@/assets/lift-maintenance.jpg';
 import liftModern from '@/assets/lift-modern.jpg';
-import serviceTeam from '@/assets/service-team.jpg';
+import serviceTeam from '@/assets/service-team-v2.jpg';
 
 type Project = {
   id: number;
