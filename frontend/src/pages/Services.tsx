@@ -227,20 +227,21 @@ const Services = () => {
   return (
     <div className="min-h-screen pt-16">
       {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-primary/10 to-secondary/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-gradient-to-br from-blue-900 via-slate-900 to-blue-950 text-white relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center"
           >
-            <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
-              Our <span className="text-primary">Services 5</span>
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-4">
+              Comprehensive Elevator Catalog
+            </span>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white mb-6">
+              Our Professional <span className="bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">Elevator Services</span>
             </h1>
-            <p className="text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-              Comprehensive elevator solutions from installation to maintenance. 
-              Professional services backed by 1 year of experience and 24/7 support.
+            <p className="text-lg md:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
+              Complete end-to-end solutions for residential, commercial, and medical facilities. Backed by certified engineers, genuine components, and 24/7 rapid response.
             </p>
           </motion.div>
         </div>
@@ -452,18 +453,25 @@ const Services = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <a
-                    href="tel:+918090457373"
-                    className="flex items-center space-x-2 text-primary hover:text-primary-dark transition-colors"
+                    href="tel:+918318326578"
+                    className="flex items-center space-x-2 text-primary hover:text-primary-dark transition-colors font-medium text-sm"
                   >
                     <Phone className="w-4 h-4" />
-                    <span>+91 80904 57373</span>
+                    <span>+91 8318326578</span>
                   </a>
                   <a
-                    href="mailto:service@swastikelevator.com"
-                    className="flex items-center space-x-2 text-primary hover:text-primary-dark transition-colors"
+                    href="tel:+918318503363"
+                    className="flex items-center space-x-2 text-primary hover:text-primary-dark transition-colors font-medium text-sm"
+                  >
+                    <Phone className="w-4 h-4 text-amber-600" />
+                    <span>+91 8318503363</span>
+                  </a>
+                  <a
+                    href="mailto:himanchalpratapsingh17@gmail.com"
+                    className="flex items-center space-x-2 text-primary hover:text-primary-dark transition-colors font-medium text-sm"
                   >
                     <Mail className="w-4 h-4" />
-                    <span>service@swastikelevator.com</span>
+                    <span>himanchalpratapsingh17@gmail.com</span>
                   </a>
                 </div>
               </div>

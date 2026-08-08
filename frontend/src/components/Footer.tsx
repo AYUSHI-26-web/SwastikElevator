@@ -23,6 +23,7 @@ const Footer = () => {
     { to: '/about', label: 'About Us' },
     { to: '/services', label: 'Services' },
     { to: '/projects', label: 'Projects' },
+    { to: '/gallery', label: 'Gallery' },
     { to: '/contact', label: 'Contact' },
   ];
 
@@ -145,15 +146,23 @@ const Footer = () => {
               </div>
 
               <div className="flex items-center space-x-4">
-                <div className="p-2 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg">
+                <div className="p-2 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shrink-0">
                   <Phone className="w-5 h-5 text-white" />
                 </div>
-                <a
-                  href="tel:+918318326578"
-                  className="text-blue-200 hover:text-blue-400 transition-colors"
-                >
-                  +91 8318326578
-                </a>
+                <div className="flex flex-col text-sm text-blue-200 space-y-0.5">
+                  <a
+                    href="tel:+918318326578"
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    +91 8318326578
+                  </a>
+                  <a
+                    href="tel:+918318503363"
+                    className="hover:text-blue-400 transition-colors"
+                  >
+                    +91 8318503363
+                  </a>
+                </div>
               </div>
 
               <div className="flex items-center space-x-4">

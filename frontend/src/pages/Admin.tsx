@@ -60,44 +60,55 @@ const Admin = () => {
 
   if (isLoggedIn) {
     return (
-      <div className="min-h-screen pt-16 bg-neutral/30">
+      <div className="min-h-screen pt-16 bg-slate-50 dark:bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center"
           >
-            <div className="bg-card border border-border rounded-2xl p-12 max-w-2xl mx-auto">
-              <div className="w-20 h-20 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-10 max-w-4xl mx-auto shadow-2xl">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                 <Shield className="w-10 h-10 text-white" />
               </div>
               
-              <h1 className="text-4xl font-bold text-foreground mb-6">
-                Admin Dashboard
-              </h1>
+              <div className="text-center mb-8">
+                <span className="text-xs font-bold text-amber-500 uppercase tracking-widest block mb-1">
+                  Management Portal
+                </span>
+                <h1 className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">
+                  Swastik Elevator Admin Control
+                </h1>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  Himanchal Enterprises Service Dispatch & Inquiries Terminal
+                </p>
+              </div>
               
-              <p className="text-muted-foreground mb-8 leading-relaxed">
-                Welcome to the Himanchal Enterprises Admin Panel. This is a placeholder dashboard 
-                interface that would typically contain management tools for:
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left mb-8">
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-foreground">Service Management</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Service Requests</li>
-                    <li>• Booking Management</li>
-                    <li>• Technician Scheduling</li>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-8">
+                <div className="bg-blue-50 dark:bg-slate-800/60 p-6 rounded-2xl border border-blue-100 dark:border-slate-700/60">
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 text-sm">Service Requests</h3>
+                  <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1.5">
+                    <li>• Instant Booking Queue</li>
+                    <li>• Emergency Repair Hotline</li>
+                    <li>• Technician Dispatch</li>
                   </ul>
                 </div>
                 
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-foreground">Customer Relations</h3>
-                  <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Contact Messages</li>
-                    <li>• Project Portfolio</li>
-                    <li>• Client Database</li>
+                <div className="bg-amber-50 dark:bg-slate-800/60 p-6 rounded-2xl border border-amber-100 dark:border-slate-700/60">
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 text-sm">Client Portfolio</h3>
+                  <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1.5">
+                    <li>• Active AMC Contracts</li>
+                    <li>• Inspection Logs</li>
+                    <li>• Project Case Studies</li>
+                  </ul>
+                </div>
+
+                <div className="bg-emerald-50 dark:bg-slate-800/60 p-6 rounded-2xl border border-emerald-100 dark:border-slate-700/60">
+                  <h3 className="font-bold text-slate-900 dark:text-white mb-2 text-sm">Analytics & Reports</h3>
+                  <ul className="text-xs text-slate-600 dark:text-slate-300 space-y-1.5">
+                    <li>• Monthly Service Revenue</li>
+                    <li>• Spare Parts Inventory</li>
+                    <li>• Client Feedback Rating</li>
                   </ul>
                 </div>
               </div>

@@ -9,8 +9,15 @@ import {
   X,
   ExternalLink,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Sparkles
 } from 'lucide-react';
+
+import heroImage from '@/assets/hero-elevator.jpg';
+import liftInstallation from '@/assets/lift-installation.jpg';
+import liftMaintenance from '@/assets/lift-maintenance.jpg';
+import liftModern from '@/assets/lift-modern.jpg';
+import serviceTeam from '@/assets/service-team.jpg';
 
 type Project = {
   id: number;
@@ -36,7 +43,7 @@ const Projects = () => {
     {
       id: 1,
       title: 'Luxury Residential Tower',
-      location: 'Bandra West, Mumbai',
+      location: 'Kanpur, Uttar Pradesh',
       type: 'Residential',
       year: '2024',
       description: 'Complete installation of 6 high-speed passenger elevators in a 35-story luxury residential tower.',
@@ -49,13 +56,13 @@ const Projects = () => {
         'Energy Efficient Motors',
         'Advanced Safety Features'
       ],
-      images: ['/api/placeholder/600/400', '/api/placeholder/600/400', '/api/placeholder/600/400'],
+      images: [liftModern, heroImage, liftInstallation],
       client: 'Premium Housing Ltd.'
     },
     {
       id: 2,
       title: 'Corporate Office Complex',
-      location: 'BKC, Mumbai',
+      location: 'Civil Lines, Kanpur',
       type: 'Commercial',
       year: '2023',
       description: 'Modernization of 8 existing elevators with latest control systems and energy-efficient drives.',
@@ -68,13 +75,13 @@ const Projects = () => {
         'Enhanced Safety Systems',
         'Remote Monitoring'
       ],
-      images: ['/api/placeholder/600/400', '/api/placeholder/600/400'],
+      images: [liftInstallation, liftMaintenance],
       client: 'TechCorp Industries'
     },
     {
       id: 3,
       title: 'Hospital Facility',
-      location: 'Andheri East, Mumbai',
+      location: 'Swaroop Nagar, Kanpur',
       type: 'Healthcare',
       year: '2023',
       description: 'Installation of specialized hospital elevators including stretcher lifts and service elevators.',
@@ -87,13 +94,13 @@ const Projects = () => {
         'Emergency Power Backup',
         'Silent Operation'
       ],
-      images: ['/api/placeholder/600/400', '/api/placeholder/600/400', '/api/placeholder/600/400', '/api/placeholder/600/400'],
+      images: [liftMaintenance, serviceTeam, heroImage],
       client: 'City General Hospital'
     },
     {
       id: 4,
       title: 'Shopping Mall',
-      location: 'Powai, Mumbai',
+      location: 'Gumti No. 5, Kanpur',
       type: 'Commercial',
       year: '2023',
       description: 'Complete elevator maintenance contract for a large shopping complex with 12 passenger elevators.',
@@ -106,13 +113,13 @@ const Projects = () => {
         'Rapid Response Team',
         'Performance Analytics'
       ],
-      images: ['/api/placeholder/600/400', '/api/placeholder/600/400'],
+      images: [heroImage, liftModern],
       client: 'Metropolitan Mall'
     },
     {
       id: 5,
       title: 'Industrial Warehouse',
-      location: 'Bhiwandi, Mumbai',
+      location: 'Panki Industrial Area, Kanpur',
       type: 'Industrial',
       year: '2022',
       description: 'Heavy-duty goods elevators for warehouse operations with high load capacity.',
@@ -125,13 +132,13 @@ const Projects = () => {
         'Safety Interlocks',
         'Maintenance Friendly Design'
       ],
-      images: ['/api/placeholder/600/400'],
+      images: [serviceTeam, liftInstallation],
       client: 'Logistics Solutions Pvt Ltd'
     },
     {
       id: 6,
       title: 'Heritage Building Restoration',
-      location: 'Fort, Mumbai',
+      location: 'Mall Road, Kanpur',
       type: 'Heritage',
       year: '2022',
       description: 'Sensitive installation of modern elevators in a heritage building while preserving architectural integrity.',
@@ -144,7 +151,7 @@ const Projects = () => {
         'Vintage Aesthetics',
         'Modern Safety Standards'
       ],
-      images: ['/api/placeholder/600/400', '/api/placeholder/600/400', '/api/placeholder/600/400'],
+      images: [liftModern, liftMaintenance, heroImage],
       client: 'Heritage Conservation Society'
     }
   ];

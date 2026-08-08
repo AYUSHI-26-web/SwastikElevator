@@ -5,11 +5,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
+import FloatingActions from "./components/FloatingActions";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Projects from "./pages/Projects";
 import Contact from "./pages/Contact";
+import Gallery from "./pages/Gallery";
 import Admin from "./pages/Admin";
 import AdminRegister from "./pages/AdminRegister";
 import NotFound from "./pages/NotFound";
@@ -22,7 +24,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen relative">
           <Navigation />
           <main className="flex-1">
             <Routes>
@@ -30,6 +32,7 @@ const App = () => (
               <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/projects" element={<Projects />} />
+              <Route path="/gallery" element={<Gallery />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/admin/register" element={<AdminRegister />} />
@@ -37,6 +40,7 @@ const App = () => (
             </Routes>
           </main>
           <Footer />
+          <FloatingActions />
         </div>
       </BrowserRouter>
     </TooltipProvider>
