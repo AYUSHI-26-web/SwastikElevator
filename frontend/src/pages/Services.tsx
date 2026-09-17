@@ -34,8 +34,10 @@ import {
   activeItems,
   defaultSiteContent,
   emailHref,
+  getDefaultServiceImageUrl,
   phoneHref,
   resolveMediaUrl,
+  resolveServiceImageUrl,
   useSiteContent,
 } from '@/lib/siteContent';
 
@@ -323,6 +325,8 @@ const Services = () => {
 
   const selected = services[activeService] || services[0];
   const SelectedIcon = getServiceIcon(selected.icon);
+  const selectedServiceImage = resolveServiceImageUrl(selected, activeService);
+  const selectedServiceFallbackImage = getDefaultServiceImageUrl(selected?.id, activeService);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
@@ -450,8 +454,15 @@ const Services = () => {
           >
             <div className="lg:col-span-5 relative min-h-[280px] lg:min-h-full">
               <img
-                src={resolveMediaUrl(selected.imageUrl)}
+                src={selectedServiceImage}
                 alt={selected.title}
+                data-fallback-src={selectedServiceFallbackImage}
+                onError={(event) => {
+                  const fallbackSrc = event.currentTarget.dataset.fallbackSrc;
+                  if (!fallbackSrc || event.currentTarget.dataset.fallbackApplied === 'true') return;
+                  event.currentTarget.dataset.fallbackApplied = 'true';
+                  event.currentTarget.src = fallbackSrc;
+                }}
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />

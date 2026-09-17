@@ -578,6 +578,19 @@ export const resolveMediaUrl = (value?: string) => {
   return mediaUrl;
 };
 
+export const getDefaultServiceImageUrl = (serviceId?: string, index?: number) => {
+  const byId = serviceId
+    ? defaultSiteContent.services.find((service) => service.id === serviceId)?.imageUrl
+    : '';
+
+  return byId || defaultSiteContent.services[index || 0]?.imageUrl || defaultSiteContent.services[0]?.imageUrl || '';
+};
+
+export const resolveServiceImageUrl = (
+  service?: Pick<WebsiteService, 'id' | 'imageUrl'>,
+  index?: number
+) => resolveMediaUrl(service?.imageUrl) || getDefaultServiceImageUrl(service?.id, index);
+
 export const phoneHref = (phone?: string) => {
   const digits = (phone || '').replace(/\D/g, '');
   return digits ? `tel:+${digits}` : '#';

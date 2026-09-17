@@ -10,7 +10,15 @@ import glassElevator from "@/assets/optimized/glass-elevator-1100.jpg";
 
 import ElevatorEstimator from "@/components/ElevatorEstimator";
 import WriteReview from "./WriteReview";
-import { activeItems, defaultSiteContent, phoneHref, resolveMediaUrl, useSiteContent } from "@/lib/siteContent";
+import {
+  activeItems,
+  defaultSiteContent,
+  getDefaultServiceImageUrl,
+  phoneHref,
+  resolveMediaUrl,
+  resolveServiceImageUrl,
+  useSiteContent,
+} from "@/lib/siteContent";
 
 import {
   ArrowRight,
@@ -52,6 +60,8 @@ const Home = () => {
   }, [activeTab, catalogServices.length]);
 
   const heroContent = content.hero;
+  const selectedServiceImage = resolveServiceImageUrl(selectedService, activeTab);
+  const selectedServiceFallbackImage = getDefaultServiceImageUrl(selectedService?.id, activeTab);
 
   const productSeries = {
     passenger: {
@@ -381,8 +391,15 @@ const Home = () => {
             <div className="lg:col-span-6">
               <div className="rounded-2xl overflow-hidden border border-slate-200 shadow-lg h-[360px]">
                 <img
-                  src={resolveMediaUrl(selectedService.imageUrl)}
+                  src={selectedServiceImage}
                   alt={selectedService.title}
+                  data-fallback-src={selectedServiceFallbackImage}
+                  onError={(event) => {
+                    const fallbackSrc = event.currentTarget.dataset.fallbackSrc;
+                    if (!fallbackSrc || event.currentTarget.dataset.fallbackApplied === "true") return;
+                    event.currentTarget.dataset.fallbackApplied = "true";
+                    event.currentTarget.src = fallbackSrc;
+                  }}
                   width="1100"
                   height="614"
                   loading="lazy"
