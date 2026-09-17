@@ -15,7 +15,7 @@ const emailJobSchema = new mongoose.Schema(
     },
     jobType: {
       type: String,
-      enum: ['admin', 'welcome'],
+      enum: ['admin', 'welcome', 'review_request'],
       required: true,
       index: true,
     },

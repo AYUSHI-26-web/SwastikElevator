@@ -5,6 +5,13 @@ import { Shield, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiUrl } from '@/lib/api';
 
+type AdminRegisterResponse = {
+  message?: string;
+  token?: string;
+};
+
+const adminTokenStorageKey = 'adminToken';
+
 const AdminRegister = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -42,10 +49,12 @@ const AdminRegister = () => {
     setIsSubmitting(true);
 
     try {
+      const adminToken = sessionStorage.getItem(adminTokenStorageKey);
       const response = await fetch(apiUrl("/api/admin/register"), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
         },
         body: JSON.stringify({
           name: formData.name,
@@ -56,7 +65,7 @@ const AdminRegister = () => {
       });
 
       const raw = await response.text();
-      let data: any = null;
+      let data: AdminRegisterResponse | null = null;
       try {
         data = raw ? JSON.parse(raw) : null;
       } catch {
@@ -66,12 +75,13 @@ const AdminRegister = () => {
       if (response.ok) {
         toast({
           title: 'Admin Registered',
-          description: data.message || 'Admin account created successfully.',
+          description: data?.message || 'Admin account created successfully.',
           duration: 3500,
         });
 
-        if (data.token) {
-          localStorage.setItem('adminToken', data.token);
+        if (data?.token) {
+          sessionStorage.setItem(adminTokenStorageKey, data.token);
+          localStorage.removeItem(adminTokenStorageKey);
         }
 
         navigate('/admin');

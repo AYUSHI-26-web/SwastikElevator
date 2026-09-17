@@ -28,11 +28,16 @@ import liftModern from '@/assets/lift-modern.jpg';
 import liftInstallation from '@/assets/lift-installation.jpg';
 
 import heroElevator from '@/assets/hero-elevator.jpg';
+import { phoneHref, resolveMediaUrl, useSiteContent } from '@/lib/siteContent';
 
 const About = () => {
   const statsRef = useRef(null);
   const teamRef = useRef(null);
   const galleryRef = useRef(null);
+  const { content } = useSiteContent();
+  const about = content.about;
+  const primaryPhone = content.contact.phones[0];
+  const secondaryPhone = content.contact.phones[1];
   
   const statsInView = useInView(statsRef, { once: true, margin: "-100px" });
   const teamInView = useInView(teamRef, { once: true, margin: "-100px" });
@@ -98,7 +103,7 @@ const About = () => {
     <div className="min-h-screen pt-16 bg-slate-50 text-slate-900">
       
       {/* ================= HERO SECTION ================= */}
-      <section className="relative py-20 lg:py-28 bg-cover bg-center text-white overflow-hidden border-b border-slate-800" style={{ backgroundImage: `url(${heroElevator})` }}>
+      <section className="relative py-20 lg:py-28 bg-cover bg-center text-white overflow-hidden border-b border-slate-800" style={{ backgroundImage: `url(${resolveMediaUrl(content.hero.imageUrl) || heroElevator})` }}>
         {/* Dark Luxury Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-blue-950/75 pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.15),transparent_55%)] pointer-events-none" />
@@ -118,17 +123,17 @@ const About = () => {
               {/* Executive Badge */}
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/40 backdrop-blur-md text-amber-300 text-xs font-bold uppercase tracking-wider shadow-lg shadow-amber-500/10">
                 <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
-                <span>A Unit of Himanchal Enterprises</span>
+                <span>{about.badge}</span>
               </div>
 
               {/* Main Heading */}
               <h1 className="text-4xl sm:text-6xl lg:text-6xl font-extrabold text-white leading-[1.15] tracking-tight">
-                About <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 bg-clip-text text-transparent">Swastik Elevator</span>
+                {about.title}
               </h1>
 
               {/* Subtitle */}
               <p className="text-base sm:text-lg text-slate-200 font-light leading-relaxed max-w-2xl">
-                Kanpur's trusted pioneer in vertical mobility. We engineer, install, and service state-of-the-art passenger, goods, and hospital elevators designed for smooth performance, energy efficiency, and unyielding safety.
+                {about.subtitle}
               </p>
 
               {/* Quick Metric Pills Strip */}
@@ -162,11 +167,11 @@ const About = () => {
                 </Link>
 
                 <a
-                  href="tel:+918318326578"
+                  href={phoneHref(primaryPhone?.value)}
                   className="px-6 py-3.5 rounded-xl bg-slate-900/80 border border-slate-700 backdrop-blur-md text-white font-bold text-xs sm:text-sm hover:bg-slate-800 transition-all flex items-center gap-2 hover:border-amber-400/50"
                 >
                   <PhoneCall className="w-4 h-4 text-amber-400" />
-                  <span>Emergency: +91 8318326578</span>
+                  <span>Emergency: {primaryPhone?.value}</span>
                 </a>
               </div>
             </motion.div>
@@ -179,8 +184,8 @@ const About = () => {
               className="lg:col-span-5 relative"
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-800/90 bg-slate-900/90 group">
-                <img
-                  src={luxuryCabin}
+                  <img
+                  src={resolveMediaUrl(about.imageUrl) || luxuryCabin}
                   alt="Swastik Elevator Luxury Cabin Interior"
                   className="w-full h-[400px] sm:h-[460px] object-cover group-hover:scale-105 transition-transform duration-700"
                 />
@@ -227,35 +232,29 @@ const About = () => {
                 Our Journey & Legacy
               </span>
               <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900">
-                Building Trust Through Engineering Integrity
+                {about.storyTitle}
               </h2>
               <div className="space-y-4 text-slate-600 leading-relaxed text-sm sm:text-base">
-                <p>
-                  Established under the umbrella of <strong>Himanchal Enterprises</strong>, Swastik Elevator was built on a firm promise: bringing world-class, ultra-reliable elevator systems to high-rises, commercial hubs, hospitals, and private homes in Kanpur and beyond.
-                </p>
-                <p>
-                  Over the years, our team has completed over 500+ successful lift installations and maintains round-the-clock emergency support for hundreds of active buildings.
-                </p>
-                <p>
-                  From low-noise VVVF energy-saving drives to robust stainless-steel cabin craftmanship, every unit we deliver undergoes rigorous safety inspections before commissioning.
-                </p>
+                {about.storyParagraphs.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
               </div>
 
               {/* Mission & Core Values */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                 <div className="bg-blue-50/80 p-5 rounded-2xl border border-blue-100 shadow-sm">
                   <Target className="w-7 h-7 text-blue-600 mb-2" />
-                  <h3 className="font-bold text-slate-900 mb-1">Our Mission</h3>
+                  <h3 className="font-bold text-slate-900 mb-1">{about.missionTitle}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    To deliver seamless, eco-friendly, and ultra-safe vertical mobility solutions backed by transparent service and zero downtime.
+                    {about.missionText}
                   </p>
                 </div>
 
                 <div className="bg-amber-50/80 p-5 rounded-2xl border border-amber-100 shadow-sm">
                   <Heart className="w-7 h-7 text-amber-600 mb-2" />
-                  <h3 className="font-bold text-slate-900 mb-1">Our Core Values</h3>
+                  <h3 className="font-bold text-slate-900 mb-1">{about.valuesTitle}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Safety without compromise, absolute technical precision, and genuine customer care available 24 hours a day, 365 days a year.
+                    {about.valuesText}
                   </p>
                 </div>
               </div>
@@ -550,20 +549,22 @@ const About = () => {
             </Link>
 
             <a
-              href="tel:+918318326578"
+              href={phoneHref(primaryPhone?.value)}
               className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-md"
             >
               <PhoneCall className="w-4 h-4 text-amber-300" />
-              <span>Call: +91 8318326578</span>
+              <span>Call: {primaryPhone?.value}</span>
             </a>
 
-            <a
-              href="tel:+918318503363"
-              className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-md"
-            >
-              <PhoneCall className="w-4 h-4 text-amber-300" />
-              <span>Call: +91 8318503363</span>
-            </a>
+            {secondaryPhone && (
+              <a
+                href={phoneHref(secondaryPhone.value)}
+                className="px-6 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-md"
+              >
+                <PhoneCall className="w-4 h-4 text-amber-300" />
+                <span>Call: {secondaryPhone.value}</span>
+              </a>
+            )}
           </div>
         </div>
       </section>

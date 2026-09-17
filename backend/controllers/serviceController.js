@@ -1,12 +1,16 @@
+const crypto = require('crypto');
 const Service = require('../models/Service');
 const { getConnectionStatus } = require('../config/db');
 const {
   buildServiceAdminMailOptions,
   buildServiceConfirmationMailOptions,
+  buildReviewRequestMailOptions,
   sendMailOptions,
 } = require('../services/emailService');
 const { enqueueEmailJob } = require('../services/emailQueueService');
 
+const DEFAULT_SITE_URL = 'https://swastik-lift-elevate-main.vercel.app';
+const serviceUpdateFields = ['name', 'email', 'phone', 'address', 'serviceType', 'message', 'status'];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const requiredFields = ['name', 'email', 'phone', 'address', 'serviceType'];
@@ -48,6 +52,123 @@ const enqueueFailedEmail = async ({ sourceId, jobType, mailOptions }) => {
     text: mailOptions.text,
     html: mailOptions.html,
   });
+};
+
+const createReviewToken = () => crypto.randomBytes(24).toString('hex');
+
+const getPublicSiteUrl = () => {
+  const rawUrl =
+    process.env.FRONTEND_URL ||
+    process.env.CLIENT_URL ||
+    process.env.SITE_URL ||
+    process.env.PUBLIC_SITE_URL ||
+    DEFAULT_SITE_URL;
+
+  const normalized = rawUrl.toString().trim().replace(/\/+$/, '');
+  return normalized || DEFAULT_SITE_URL;
+};
+
+const buildReviewUrl = (token) =>
+  `${getPublicSiteUrl()}/?reviewToken=${encodeURIComponent(token)}#reviews`;
+
+const ensureReviewToken = async (service) => {
+  if (service.reviewToken) {
+    return service.reviewToken;
+  }
+
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    service.reviewToken = createReviewToken();
+
+    try {
+      await service.save();
+      return service.reviewToken;
+    } catch (error) {
+      if (error && error.code === 11000 && attempt < 5) {
+        service.reviewToken = undefined;
+        continue;
+      }
+
+      throw error;
+    }
+  }
+
+  throw new Error('Unable to generate a unique review link');
+};
+
+const sendReviewRequestForService = async (service) => {
+  if (service.reviewSubmittedAt) {
+    return {
+      emailStatus: 'already_submitted',
+      reviewUrl: service.reviewToken ? buildReviewUrl(service.reviewToken) : null,
+    };
+  }
+
+  if (service.reviewRequestedAt && ['sent', 'queued'].includes(service.reviewEmailStatus)) {
+    return {
+      emailStatus: service.reviewEmailStatus,
+      reviewUrl: service.reviewToken ? buildReviewUrl(service.reviewToken) : null,
+      alreadyRequested: true,
+    };
+  }
+
+  const token = await ensureReviewToken(service);
+  const reviewUrl = buildReviewUrl(token);
+  const mailOptions = buildReviewRequestMailOptions(service, reviewUrl);
+  const now = new Date();
+
+  try {
+    await sendMailOptions(mailOptions);
+    service.reviewRequestedAt = now;
+    service.reviewEmailStatus = 'sent';
+    service.reviewEmailSentAt = now;
+    service.reviewEmailLastError = '';
+    await service.save();
+
+    return {
+      emailStatus: 'sent',
+      reviewUrl,
+    };
+  } catch (error) {
+    try {
+      await enqueueFailedEmail({
+        sourceId: service._id,
+        jobType: 'review_request',
+        mailOptions,
+      });
+
+      service.reviewRequestedAt = service.reviewRequestedAt || now;
+      service.reviewEmailStatus = 'queued';
+      service.reviewEmailLastError = error.message;
+      await service.save();
+
+      return {
+        emailStatus: 'queued',
+        reviewUrl,
+        error: error.message,
+      };
+    } catch (queueError) {
+      service.reviewRequestedAt = service.reviewRequestedAt || now;
+      service.reviewEmailStatus = 'failed';
+      service.reviewEmailLastError = queueError.message;
+      await service.save();
+
+      console.error('Failed to queue review request email:', queueError.message);
+
+      return {
+        emailStatus: 'failed',
+        reviewUrl,
+        error: queueError.message,
+      };
+    }
+  }
+};
+
+const applyServiceUpdates = (service, body) => {
+  for (const field of serviceUpdateFields) {
+    if (Object.prototype.hasOwnProperty.call(body, field)) {
+      service[field] = typeof body[field] === 'string' ? body[field].trim() : body[field];
+    }
+  }
 };
 
 exports.createService = async (req, res) => {
@@ -196,9 +317,34 @@ exports.getServiceById = async (req, res) => {
 
 exports.updateService = async (req, res) => {
   try {
-    const service = await Service.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const service = await Service.findById(req.params.id);
     if (!service) return res.status(404).json({ message: 'Service not found' });
-    res.json(service);
+
+    const previousStatus = service.status;
+    applyServiceUpdates(service, req.body);
+    await service.save();
+
+    let reviewRequest = null;
+    if (
+      previousStatus !== 'completed' &&
+      service.status === 'completed' &&
+      !service.reviewSubmittedAt &&
+      !(service.reviewRequestedAt && ['sent', 'queued'].includes(service.reviewEmailStatus))
+    ) {
+      reviewRequest = await sendReviewRequestForService(service);
+    }
+
+    res.json({
+      success: true,
+      message:
+        reviewRequest && reviewRequest.emailStatus === 'sent'
+          ? 'Service updated and review request email sent.'
+          : 'Service updated successfully.',
+      data: {
+        service,
+        reviewRequest,
+      },
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

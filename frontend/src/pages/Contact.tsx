@@ -25,6 +25,13 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiUrl } from '@/lib/api';
+import {
+  emailHref,
+  phoneHref,
+  resolveMediaUrl,
+  useSiteContent,
+  whatsappHref,
+} from '@/lib/siteContent';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -43,6 +50,11 @@ const Contact = () => {
   });
   
   const { toast } = useToast();
+  const { content } = useSiteContent();
+  const primaryPhone = content.contact.phones[0];
+  const secondaryPhone = content.contact.phones[1];
+  const primaryEmail = content.contact.emails[0];
+  const addressText = content.contact.addressLines.join(', ');
   const formRef = useRef(null);
   const mapRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -163,7 +175,7 @@ const Contact = () => {
       console.error("Error sending contact form:", error);
       const errorMessage = error instanceof Error 
         ? error.message 
-        : "There was a problem connecting to the server. Please try again later or contact us directly at +91 8318326578.";
+        : `There was a problem connecting to the server. Please try again later or contact us directly at ${primaryPhone?.value || 'the listed phone number'}.`;
       
       toast({
         title: "Failed to Send Message",
@@ -176,15 +188,11 @@ const Contact = () => {
     }
   };
 
-  const whatsappMessage = encodeURIComponent(
-    "Hello Swastik Elevator! I am interested in your elevator services and site inspection. Please get in touch."
-  );
-
   return (
     <div className="min-h-screen pt-16 bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
       
       {/* ================= HERO SECTION ================= */}
-      <section className="relative py-20 lg:py-28 bg-cover bg-center text-white overflow-hidden border-b border-slate-800" style={{ backgroundImage: `url(${heroElevator})` }}>
+      <section className="relative py-20 lg:py-28 bg-cover bg-center text-white overflow-hidden border-b border-slate-800" style={{ backgroundImage: `url(${resolveMediaUrl(content.hero.imageUrl) || heroElevator})` }}>
         {/* Dark Luxury Overlays */}
         <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/90 to-blue-950/75 pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(245,158,11,0.15),transparent_55%)] pointer-events-none" />
@@ -207,7 +215,7 @@ const Contact = () => {
               </div>
 
               <h1 className="text-4xl sm:text-6xl lg:text-6xl font-extrabold text-white leading-[1.15] tracking-tight">
-                Contact <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 bg-clip-text text-transparent">Swastik Elevator</span>
+                Contact <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 bg-clip-text text-transparent">{content.identity.brandName}</span>
               </h1>
 
               <p className="text-base sm:text-lg text-slate-200 font-light leading-relaxed max-w-2xl">
@@ -281,7 +289,7 @@ const Contact = () => {
             
             {/* Phone Hotline 1 */}
             <a
-              href="tel:+918318326578"
+              href={phoneHref(primaryPhone?.value)}
               className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-blue-500/40 hover:bg-blue-50/30 transition-all duration-300 shadow-sm hover:shadow-lg group flex items-start gap-4"
             >
               <div className="w-12 h-12 rounded-2xl bg-blue-600/10 text-blue-700 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all">
@@ -292,34 +300,36 @@ const Contact = () => {
                   Primary Hotline
                 </span>
                 <span className="text-base font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors block">
-                  +91 8318326578
+                  {primaryPhone?.value}
                 </span>
-                <span className="text-xs text-slate-500 mt-1 block">24/7 Breakdown & Sales</span>
+                <span className="text-xs text-slate-500 mt-1 block">{primaryPhone?.note}</span>
               </div>
             </a>
 
             {/* Phone Hotline 2 */}
-            <a
-              href="tel:+918318503363"
-              className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-amber-500/40 hover:bg-amber-50/30 transition-all duration-300 shadow-sm hover:shadow-lg group flex items-start gap-4"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-800 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all">
-                <Phone className="w-6 h-6" />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                  Technical Desk
-                </span>
-                <span className="text-base font-extrabold text-slate-900 group-hover:text-amber-800 transition-colors block">
-                  +91 8318503363
-                </span>
-                <span className="text-xs text-slate-500 mt-1 block">Engineering Consultation</span>
-              </div>
-            </a>
+            {secondaryPhone && (
+              <a
+                href={phoneHref(secondaryPhone.value)}
+                className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-amber-500/40 hover:bg-amber-50/30 transition-all duration-300 shadow-sm hover:shadow-lg group flex items-start gap-4"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-800 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-slate-950 transition-all">
+                  <Phone className="w-6 h-6" />
+                </div>
+                <div>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                    {secondaryPhone.label}
+                  </span>
+                  <span className="text-base font-extrabold text-slate-900 group-hover:text-amber-800 transition-colors block">
+                    {secondaryPhone.value}
+                  </span>
+                  <span className="text-xs text-slate-500 mt-1 block">{secondaryPhone.note}</span>
+                </div>
+              </a>
+            )}
 
             {/* WhatsApp Channel */}
             <a
-              href={`https://wa.me/918318326578?text=${whatsappMessage}`}
+              href={whatsappHref(content.contact.whatsappNumber, content.contact.whatsappMessage)}
               target="_blank"
               rel="noopener noreferrer"
               className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-emerald-500/40 hover:bg-emerald-50/30 transition-all duration-300 shadow-sm hover:shadow-lg group flex items-start gap-4"
@@ -341,7 +351,7 @@ const Contact = () => {
 
             {/* Office HQ Location */}
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Panki+Khatra%2C+Kanpur%2C+Uttar+Pradesh"
+              href={content.contact.mapUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 hover:border-blue-500/40 hover:bg-blue-50/30 transition-all duration-300 shadow-sm hover:shadow-lg group flex items-start gap-4"
@@ -354,9 +364,11 @@ const Contact = () => {
                   Head Office
                 </span>
                 <span className="text-base font-extrabold text-slate-900 group-hover:text-blue-700 transition-colors block">
-                  Panki Katra, Kanpur
+                  {content.contact.addressLines[0]}
                 </span>
-                <span className="text-xs text-slate-500 mt-1 block">Uttar Pradesh, India</span>
+                <span className="text-xs text-slate-500 mt-1 block">
+                  {content.contact.addressLines.slice(1).join(', ')}
+                </span>
               </div>
             </a>
 
@@ -700,13 +712,13 @@ const Contact = () => {
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-sm text-white">Swastik Elevator HQ</h3>
-                    <p className="text-xs text-slate-300">Panki Katra, Kanpur, Uttar Pradesh</p>
+                    <h3 className="font-extrabold text-sm text-white">{content.identity.brandName} HQ</h3>
+                    <p className="text-xs text-slate-300">{addressText}</p>
                   </div>
                 </div>
 
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=Panki+Khatra%2C+Kanpur%2C+Uttar+Pradesh"
+                  href={content.contact.mapUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-amber-300 font-bold text-xs border border-white/20 transition-all flex items-center gap-1"
@@ -718,8 +730,8 @@ const Contact = () => {
 
               <div className="w-full">
                 <iframe
-                  src="https://www.google.com/maps?q=Panki+Khatra,Kanpur,Uttar+Pradesh&output=embed"
-                  title="Swastik Elevator - Panki Katra, Kanpur"
+                  src={content.contact.mapEmbedUrl}
+                  title={`${content.identity.brandName} - ${addressText}`}
                   className="w-full h-72 md:h-80 border-0"
                   loading="lazy"
                 />
@@ -732,7 +744,7 @@ const Contact = () => {
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <span>Office Hours: Monday - Saturday (9:00 AM - 8:00 PM)</span>
+                  <span>Office Hours: {content.contact.businessHours.join(' | ')}</span>
                 </div>
                 <div className="flex items-center gap-2 font-medium">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -767,20 +779,22 @@ const Contact = () => {
 
               <div className="flex flex-col sm:flex-row gap-3 pt-1">
                 <a
-                  href="tel:+918318326578"
+                  href={phoneHref(primaryPhone?.value)}
                   className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
                 >
                   <PhoneCall className="w-4 h-4" />
-                  <span>Call: +91 8318326578</span>
+                  <span>Call: {primaryPhone?.value}</span>
                 </a>
 
-                <a
-                  href="tel:+918318503363"
-                  className="flex-1 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
-                >
-                  <PhoneCall className="w-4 h-4 text-amber-400" />
-                  <span>Call: +91 8318503363</span>
-                </a>
+                {secondaryPhone && (
+                  <a
+                    href={phoneHref(secondaryPhone.value)}
+                    className="flex-1 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 hover:scale-[1.02]"
+                  >
+                    <PhoneCall className="w-4 h-4 text-amber-400" />
+                    <span>Call: {secondaryPhone.value}</span>
+                  </a>
+                )}
               </div>
             </motion.div>
 

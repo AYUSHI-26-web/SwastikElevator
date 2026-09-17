@@ -20,13 +20,14 @@ import liftInstallation from '@/assets/lift-installation.jpg';
 import liftModern from '@/assets/lift-modern.jpg';
 import techMaintenance from '@/assets/tech-maintenance.jpg';
 import heroImage from '@/assets/hero-elevator.jpg';
+import { activeItems, defaultSiteContent, resolveMediaUrl, useSiteContent } from '@/lib/siteContent';
 
 interface GalleryItem {
-  id: number;
+  id: string;
   title: string;
-  category: 'passenger' | 'glass' | 'installation' | 'modernization';
+  category: string;
   categoryLabel: string;
-  image: string;
+  imageUrl: string;
   location: string;
   description: string;
   features: string[];
@@ -35,87 +36,87 @@ interface GalleryItem {
 const Gallery = () => {
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null);
+  const { content } = useSiteContent();
 
-  const galleryItems: GalleryItem[] = [
+  const fallbackGalleryItems: GalleryItem[] = [
     {
-      id: 1,
+      id: 'luxury-stainless-steel-passenger-cabin',
       title: 'Luxury Stainless Steel Passenger Cabin',
       category: 'passenger',
       categoryLabel: 'Passenger & Luxury',
-      image: luxuryCabin,
+      imageUrl: luxuryCabin,
       location: 'Tower Heights Residency, Kanpur',
       description: 'Italian mirror-finish stainless steel elevator cabin equipped with PMSM gearless traction drive and LED mood illumination.',
       features: ['PMSM Gearless Traction', 'Automatic Rescue Device (ARD)', 'Italian Stainless Steel']
     },
     {
-      id: 2,
+      id: 'architectural-panoramic-glass-lift',
       title: '360Â° Architectural Panoramic Glass Lift',
       category: 'glass',
       categoryLabel: 'Panoramic Glass',
-      image: glassElevator,
+      imageUrl: glassElevator,
       location: 'Corporate Plaza, Civil Lines',
       description: 'Hexagonal curved laminated safety glass elevator designed for scenic 360-degree viewing with whisper-quiet VVVF drive.',
       features: ['360Â° Panoramic View', 'Ultra-Quiet <45dB', 'VVVF Energy Saving']
     },
     {
-      id: 3,
+      id: 'field-engineering-installation-work',
       title: 'Field Engineering & Installation Work',
       category: 'installation',
       categoryLabel: 'Installation & Fieldwork',
-      image: serviceTeam,
+      imageUrl: serviceTeam,
       location: 'Sunshine Apartments, Swaroop Nagar',
       description: 'Certified Swastik field engineering team carrying out multi-stage safety lock testing and millimeter leveling alignment.',
       features: ['IS 14665 Certified', 'Millimeter Precision', 'Safety Interlock Verified']
     },
     {
-      id: 4,
+      id: 'precision-structural-shaft-mounting',
       title: 'Precision Structural Shaft Mounting',
       category: 'installation',
       categoryLabel: 'Installation & Fieldwork',
-      image: liftInstallation,
+      imageUrl: liftInstallation,
       location: 'Medical Complex, Kakadeo',
       description: 'Heavy-duty guide rail mounting and shock-absorbing rubber damper installation according to national elevator safety codes.',
       features: ['Heavy Duty Rails', 'Anti-Vibration Dampers', 'Medical Grade Safety']
     },
     {
-      id: 5,
+      id: 'control-panel-modernization',
       title: 'Micro-Processor Control Panel Modernization',
       category: 'modernization',
       categoryLabel: 'Modernization & Control',
-      image: liftModern,
+      imageUrl: liftModern,
       location: 'Kalyanpur High-Rise Hub',
       description: 'Upgraded digital micro-processor elevator control panel with integrated VVVF drive, lowering electricity consumption by 35%.',
       features: ['Digital Microprocessor', '35% Power Reduction', 'Smooth Jerk-Free Start']
     },
     {
-      id: 6,
+      id: 'rapid-maintenance-team',
       title: '24/7 Breakdown Rapid Maintenance Team',
       category: 'modernization',
       categoryLabel: 'Modernization & Control',
-      image: techMaintenance,
+      imageUrl: techMaintenance,
       location: 'Kidwai Nagar Commercial Center',
       description: 'On-site preventive health inspection and instant OEM spare parts replacement carried out by technical field supervisors.',
       features: ['24/7 Rapid Response', '100% OEM Spare Parts', '12-Point Safety Audit']
     },
     {
-      id: 7,
+      id: 'commercial-high-speed-tower-elevator',
       title: 'Commercial High-Speed Tower Elevator',
       category: 'passenger',
       categoryLabel: 'Passenger & Luxury',
-      image: heroImage,
+      imageUrl: heroImage,
       location: 'Mall Road Executive Tower',
       description: 'High-capacity passenger elevator unit serving 15+ floors with high-speed microprocessor floor dispatching.',
       features: ['High-Speed Transit', 'Infrared Light Curtain', 'Braille Push Buttons']
     }
   ];
 
-  const filterTabs = [
-    { id: 'all', label: 'All Photos' },
-    { id: 'passenger', label: 'Passenger & Luxury' },
-    { id: 'glass', label: 'Panoramic Glass' },
-    { id: 'installation', label: 'Field Installation' },
-    { id: 'modernization', label: 'Modernization & Controls' }
-  ];
+  const editableGalleryItems = activeItems(content.galleryImages);
+  const galleryItems = editableGalleryItems.length ? editableGalleryItems : activeItems(defaultSiteContent.galleryImages);
+  const categoryTabs = Array.from(
+    new Map(galleryItems.map((item) => [item.category, item.categoryLabel || item.category])).entries()
+  );
+  const filterTabs = [{ id: 'all', label: 'All Photos' }, ...categoryTabs.map(([id, label]) => ({ id, label }))];
 
   const filteredItems = activeFilter === 'all' 
     ? galleryItems 
@@ -143,7 +144,7 @@ const Gallery = () => {
             </div>
 
             <h1 className="text-4xl sm:text-6xl font-extrabold text-white tracking-tight">
-              Swastik Elevator <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 bg-clip-text text-transparent">Gallery</span>
+              {content.identity.brandName} <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-300 bg-clip-text text-transparent">Gallery</span>
             </h1>
 
             <p className="text-base sm:text-lg text-slate-200 font-light leading-relaxed">
@@ -195,8 +196,8 @@ const Gallery = () => {
                 <div>
                   {/* Image Frame */}
                   <div className="relative h-64 overflow-hidden bg-slate-900">
-                    <img
-                      src={item.image}
+                      <img
+                      src={resolveMediaUrl(item.imageUrl)}
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
@@ -283,7 +284,7 @@ const Gallery = () => {
               {/* Modal Image */}
               <div className="md:w-3/5 bg-slate-950 h-72 md:h-auto relative">
                 <img
-                  src={selectedImage.image}
+                  src={resolveMediaUrl(selectedImage.imageUrl)}
                   alt={selectedImage.title}
                   className="w-full h-full object-cover"
                 />

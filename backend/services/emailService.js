@@ -427,6 +427,68 @@ const buildServiceConfirmationMailOptions = (serviceData) => {
   };
 };
 
+const buildReviewRequestMailOptions = (serviceData, reviewUrl) => {
+  const { emailUser } = getMailConfig();
+  const safe = {
+    name: escapeHtml(serviceData.name),
+    serviceType: escapeHtml(serviceData.serviceType),
+    address: escapeHtml(serviceData.address || '-'),
+    reviewUrl: escapeHtml(reviewUrl),
+  };
+
+  return {
+    from: `"Swastik Elevator" <${emailUser}>`,
+    to: serviceData.email,
+    subject: 'How was your Swastik Elevator service?',
+    text: [
+      `Dear ${serviceData.name},`,
+      '',
+      'Thank you for choosing Swastik Elevator.',
+      'Your service/project has been marked completed, and we would be grateful for your feedback.',
+      '',
+      `Service: ${serviceData.serviceType}`,
+      `Location: ${serviceData.address || '-'}`,
+      '',
+      `Give your review: ${reviewUrl}`,
+      '',
+      'This review link is unique to your completed service and can be used only once.',
+    ].join('\n'),
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #1f2937; background: #ffffff;">
+        <div style="background-color: #1e40af; padding: 24px; text-align: center; border-top: 4px solid #f59e0b;">
+          <h1 style="color: white; margin: 0; font-size: 26px;">Swastik Elevator</h1>
+          <p style="color: #dbeafe; margin: 6px 0 0;">A unit of Himanchal Enterprises</p>
+        </div>
+        <div style="padding: 32px; background-color: #f8fafc;">
+          <p style="font-size: 16px; margin-top: 0;">Dear ${safe.name},</p>
+          <h2 style="color: #1e40af; margin: 0 0 12px; font-size: 24px;">Your feedback helps us serve better</h2>
+          <p style="line-height: 1.7; margin: 0 0 22px;">
+            Your elevator service/project has been completed. We would appreciate a short review about your experience with our engineering and support team.
+          </p>
+          <table style="width: 100%; border-collapse: collapse; background: #ffffff; border: 1px solid #e5e7eb; margin-bottom: 26px;">
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; font-weight: bold; width: 34%;">Service</td>
+              <td style="padding: 12px; border-bottom: 1px solid #e5e7eb;">${safe.serviceType}</td>
+            </tr>
+            <tr>
+              <td style="padding: 12px; font-weight: bold;">Location</td>
+              <td style="padding: 12px;">${safe.address}</td>
+            </tr>
+          </table>
+          <div style="text-align: center;">
+            <a href="${safe.reviewUrl}" style="display: inline-block; background: #f59e0b; color: #0f172a; text-decoration: none; font-weight: 800; padding: 14px 24px; border-radius: 8px;">
+              Give Your Review
+            </a>
+          </div>
+          <p style="font-size: 12px; color: #64748b; line-height: 1.6; margin: 24px 0 0;">
+            This review link is unique to your completed service and can be used only once.
+          </p>
+        </div>
+      </div>
+    `,
+  };
+};
+
 module.exports = {
   getMailConfig,
   ensureTransporter,
@@ -435,6 +497,7 @@ module.exports = {
   buildWelcomeMailOptions,
   buildServiceAdminMailOptions,
   buildServiceConfirmationMailOptions,
+  buildReviewRequestMailOptions,
   classifyEmailError,
   getEmailAuthStatus,
   preflightEmailAuth,

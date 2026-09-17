@@ -4,8 +4,9 @@ const {
   getContactInfo,
   createContactInfo
 } = require('../controllers/contactInfoController');
+const { adminAuth } = require('../utils/adminAuth');
 
 router.get('/', getContactInfo);
-router.post('/', createContactInfo);
+router.post('/', adminAuth, createContactInfo);
 
 module.exports = router;

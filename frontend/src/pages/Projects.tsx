@@ -18,9 +18,10 @@ import liftInstallation from '@/assets/lift-installation.jpg';
 import liftMaintenance from '@/assets/lift-maintenance.jpg';
 import liftModern from '@/assets/lift-modern.jpg';
 import serviceTeam from '@/assets/service-team-v2.jpg';
+import { activeItems, defaultSiteContent, resolveMediaUrl, useSiteContent } from '@/lib/siteContent';
 
 type Project = {
-  id: number;
+  id: string;
   title: string;
   location: string;
   type: string;
@@ -35,11 +36,12 @@ type Project = {
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { content } = useSiteContent();
   
   const projectsRef = useRef(null);
   const projectsInView = useInView(projectsRef, { once: true, margin: "-100px" });
 
-  const projects = [
+  const fallbackProjects = [
     {
       id: 1,
       title: 'Luxury Residential Tower',
@@ -156,7 +158,9 @@ const Projects = () => {
     }
   ];
 
-  const projectTypes = ['All', 'Residential', 'Commercial', 'Healthcare', 'Industrial', 'Heritage'];
+  const editableProjects = activeItems(content.projects);
+  const projects = editableProjects.length ? editableProjects : activeItems(defaultSiteContent.projects);
+  const projectTypes = ['All', ...Array.from(new Set(projects.map((project) => project.type).filter(Boolean)))];
   const [selectedType, setSelectedType] = useState('All');
 
   const filteredProjects = selectedType === 'All' 
@@ -243,6 +247,13 @@ const Projects = () => {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <Building className="w-16 h-16 text-muted-foreground/50" />
                   </div>
+                  {project.images[0] && (
+                    <img
+                      src={resolveMediaUrl(project.images[0])}
+                      alt={project.title}
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
                   <div className="absolute bottom-4 left-4 right-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="flex items-center space-x-2 text-sm">
                       <ExternalLink className="w-4 h-4" />
@@ -318,6 +329,11 @@ const Projects = () => {
                       <div className="absolute inset-0 flex items-center justify-center">
                         <Building className="w-20 h-20 text-muted-foreground/50" />
                       </div>
+                      <img
+                        src={resolveMediaUrl(selectedProject.images[currentImageIndex])}
+                        alt={`${selectedProject.title} image ${currentImageIndex + 1}`}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
                       {selectedProject.images.length > 1 && (
                         <>
                           <button

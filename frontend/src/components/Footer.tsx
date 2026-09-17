@@ -1,39 +1,40 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { 
   Phone, 
   Mail, 
   MapPin, 
-  Facebook, 
   Instagram, 
-  Linkedin,
   Clock,
-  ChevronRight
+  ChevronRight,
+  Globe2
 } from 'lucide-react';
-import logo from '../assets/LOGO.png';
+import {
+  activeItems,
+  emailHref,
+  phoneHref,
+  resolveMediaUrl,
+  useSiteContent,
+} from '@/lib/siteContent';
 
 const Footer = () => {
-  const socialLinks = [
-    { icon: Instagram, href: 'https://www.instagram.com/swastik_elevetor_kanpur?igsh=MWltcDQxc2J4YXEzeQ==', label: 'Instagram' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Facebook, href: '#', label: 'Facebook' }
-  ];
+  const { content } = useSiteContent();
+  const logo = resolveMediaUrl(content.identity.logoUrl);
+  const primaryPhone = content.contact.phones[0];
+  const secondaryPhone = content.contact.phones[1];
+  const primaryEmail = content.contact.emails[0];
+  const addressText = content.contact.addressLines.join(', ');
+  const unitPrefix = content.identity.unitLabel.includes(content.identity.companyName)
+    ? content.identity.unitLabel.replace(content.identity.companyName, '').trim()
+    : content.identity.unitLabel || 'A unit of';
 
-  const quickLinks = [
-    { to: '/about', label: 'About Us' },
-    { to: '/services', label: 'Services' },
-    { to: '/projects', label: 'Projects' },
-    { to: '/gallery', label: 'Gallery' },
-    { to: '/contact', label: 'Contact' },
-  ];
+  const socialLinks = content.socialLinks.map((social) => ({
+    icon: social.platform.toLowerCase().includes('instagram') ? Instagram : Globe2,
+    href: social.url,
+    label: social.label || social.platform,
+  }));
 
-  const services = [
-    'Lift Installation',
-    'AMC Services',
-    'Modernization',
-    'Emergency Repair',
-    'Spare Parts',
-  ];
+  const quickLinks = content.footer.quickLinks.map((link) => ({ to: link.url, label: link.label }));
+  const services = activeItems(content.services).slice(0, 6).map((service) => service.title);
 
   return (
     <footer className="bg-slate-950 text-white pt-8 pb-5 md:pt-14 md:pb-8 border-t-4 border-amber-500 shadow-[0_-12px_40px_rgba(15,23,42,0.35)]">
@@ -43,19 +44,23 @@ const Footer = () => {
           <div className="flex items-center gap-3">
             <img
               src={logo}
-              alt="Swastik Elevator Logo"
+              alt={`${content.identity.brandName} Logo`}
+              width="160"
+              height="106"
+              loading="lazy"
+              decoding="async"
               className="w-12 h-12 object-contain rounded-lg shadow bg-white p-1.5 shrink-0"
             />
             <div className="leading-tight min-w-0">
-              <span className="block text-base font-bold text-orange-500">Swastik Elevator</span>
+              <span className="block text-base font-bold text-orange-500">{content.identity.brandName}</span>
               <span className="block text-[11px] font-medium text-gray-300">
-                A unit of <span className="font-bold text-blue-400">Himanchal Enterprises</span>
+                {unitPrefix} <span className="font-bold text-blue-400">{content.identity.companyName}</span>
               </span>
             </div>
           </div>
 
           <p className="text-gray-300 text-xs leading-relaxed">
-            Reliable lift solutions — installation to maintenance with 24/7 support.
+            {content.footer.description}
           </p>
 
           <div className="flex gap-2">
@@ -63,6 +68,8 @@ const Footer = () => {
               <a
                 key={social.label}
                 href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-8 h-8 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center"
                 aria-label={social.label}
               >
@@ -105,24 +112,34 @@ const Footer = () => {
             <h3 className="text-sm font-bold text-white">Contact</h3>
             <div className="flex items-start gap-2 text-xs text-blue-200">
               <MapPin className="w-3.5 h-3.5 text-blue-400 mt-0.5 shrink-0" />
-              <span>Panki Khatra, Kanpur, UP</span>
+              <span>{addressText}</span>
             </div>
             <div className="flex items-center gap-2 text-xs text-blue-200">
               <Phone className="w-3.5 h-3.5 text-blue-400 shrink-0" />
               <div className="flex flex-wrap gap-x-2">
-                <a href="tel:+918318326578" className="hover:text-blue-400">+91 8318326578</a>
-                <a href="tel:+918318503363" className="hover:text-blue-400">+91 8318503363</a>
+                {primaryPhone && (
+                  <a href={phoneHref(primaryPhone.value)} className="hover:text-blue-400">
+                    {primaryPhone.value}
+                  </a>
+                )}
+                {secondaryPhone && (
+                  <a href={phoneHref(secondaryPhone.value)} className="hover:text-blue-400">
+                    {secondaryPhone.value}
+                  </a>
+                )}
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-blue-200">
-              <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-              <a href="mailto:himanchalenterprises6@gmail.com" className="break-all hover:text-blue-400">
-                himanchalenterprises6@gmail.com
-              </a>
-            </div>
+            {primaryEmail && (
+              <div className="flex items-center gap-2 text-xs text-blue-200">
+                <Mail className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                <a href={emailHref(primaryEmail.value)} className="break-all hover:text-blue-400">
+                  {primaryEmail.value}
+                </a>
+              </div>
+            )}
             <div className="flex items-center gap-2 text-xs text-blue-200">
               <Clock className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-              <span>24/7 Support · Mon–Sat 9AM–6PM</span>
+              <span>{content.contact.businessHours.join(' | ')}</span>
             </div>
           </div>
         </div>
@@ -133,34 +150,39 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <img 
                 src={logo} 
-                alt="Swastik Elevator Logo" 
+                alt={`${content.identity.brandName} Logo`} 
+                width="160"
+                height="106"
+                loading="lazy"
+                decoding="async"
                 className="w-20 h-20 object-contain rounded-lg shadow-lg bg-white p-2"
               />
               <div className="leading-tight">
                 <span className="block text-xl font-bold text-orange-500">
-                  Swastik Elevator
+                  {content.identity.brandName}
                 </span>
                 <span className="block text-sm font-medium tracking-wide text-gray-300">
-                  A unit of <span className="font-bold text-blue-400">Himanchal Enterprises</span>
+                  {unitPrefix} <span className="font-bold text-blue-400">{content.identity.companyName}</span>
                 </span>
               </div>
             </div>
 
             <p className="text-gray-200 text-base leading-relaxed">
-              Your trusted partner for reliable lift solutions. We provide complete elevator services from installation to maintenance with 24/7 support.
+              {content.footer.description}
             </p>
 
             <div className="flex space-x-3">
               {socialLinks.map((social) => (
-                <motion.a
+                <a
                   key={social.label}
                   href={social.href}
-                  whileHover={{ scale: 1.15, y: -3 }}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-800 rounded-full flex items-center justify-center hover:from-blue-500 hover:to-blue-700 transition-all duration-300 shadow-md"
                   aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5 text-white" />
-                </motion.a>
+                </a>
               ))}
             </div>
           </div>
@@ -212,11 +234,14 @@ const Footer = () => {
                 </div>
                 <div>
                   <p className="text-blue-200">
-                    Panki Khatra,<br />
-                    Kanpur, Uttar Pradesh
+                    {content.contact.addressLines.map((line) => (
+                      <span key={line} className="block">
+                        {line}
+                      </span>
+                    ))}
                   </p>
                   <a
-                    href="https://www.google.com/maps/search/?api=1&query=Panki+Khatra%2C+Kanpur%2C+Uttar+Pradesh"
+                    href={content.contact.mapUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-blue-300 hover:text-blue-200 transition-colors block mt-2 underline"
@@ -231,34 +256,40 @@ const Footer = () => {
                   <Phone className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex flex-col text-sm text-blue-200 space-y-0.5">
-                  <a href="tel:+918318326578" className="hover:text-blue-400 transition-colors">
-                    +91 8318326578
-                  </a>
-                  <a href="tel:+918318503363" className="hover:text-blue-400 transition-colors">
-                    +91 8318503363
-                  </a>
+                  {content.contact.phones.map((phone) => (
+                    <a
+                      key={`${phone.label}-${phone.value}`}
+                      href={phoneHref(phone.value)}
+                      className="hover:text-blue-400 transition-colors"
+                    >
+                      {phone.value}
+                    </a>
+                  ))}
                 </div>
               </div>
 
-              <div className="flex items-center space-x-4">
-                <div className="p-2 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg">
-                  <Mail className="w-5 h-5 text-white" />
+              {primaryEmail && (
+                <div className="flex items-center space-x-4">
+                  <div className="p-2 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg">
+                    <Mail className="w-5 h-5 text-white" />
+                  </div>
+                  <a 
+                    href={emailHref(primaryEmail.value)}
+                    className="text-blue-200 hover:text-blue-400 transition-colors break-all text-sm"
+                  >
+                    {primaryEmail.value}
+                  </a>
                 </div>
-                <a 
-                  href="mailto:himanchalenterprises6@gmail.com"
-                  className="text-blue-200 hover:text-blue-400 transition-colors break-all text-sm"
-                >
-                  himanchalenterprises6@gmail.com
-                </a>
-              </div>
+              )}
 
               <div className="flex items-start space-x-4">
                 <div className="mt-1 p-2 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg">
                   <Clock className="w-5 h-5 text-white" />
                 </div>
                 <div className="text-blue-200">
-                  <p className="mb-1">24/7 Emergency Service</p>
-                  <p>Mon-Sat: 9:00 AM - 6:00 PM</p>
+                  {content.contact.businessHours.map((line) => (
+                    <p key={line} className="mb-1">{line}</p>
+                  ))}
                 </div>
               </div>
             </div>
@@ -267,10 +298,10 @@ const Footer = () => {
 
         <div className="border-t border-blue-800/50 mt-6 md:mt-12 pt-4 md:pt-8 text-center">
           <p className="text-gray-400 text-[11px] md:text-sm">
-            © 2025 Himanchal Enterprises. Designed & Developed by: Ayushi Srivastava.
+            {content.footer.copyright}
           </p>
           <p className="text-gray-500 text-[10px] md:text-xs mt-1 md:mt-2">
-            Built with excellence for reliable lift solutions.
+            {content.footer.bottomNote}
           </p>
         </div>
       </div>

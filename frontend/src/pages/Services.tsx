@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import liftModern from '@/assets/lift-modern.jpg';
@@ -30,6 +30,25 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiUrl } from '@/lib/api';
+import {
+  activeItems,
+  defaultSiteContent,
+  emailHref,
+  phoneHref,
+  resolveMediaUrl,
+  useSiteContent,
+} from '@/lib/siteContent';
+
+const serviceIconMap = {
+  Settings,
+  Shield,
+  Wrench,
+  Zap,
+  Package,
+};
+
+const getServiceIcon = (icon?: string) =>
+  serviceIconMap[(icon || 'Settings') as keyof typeof serviceIconMap] || Settings;
 
 const Services = () => {
   const [formData, setFormData] = useState({
@@ -44,6 +63,12 @@ const Services = () => {
   const [activeService, setActiveService] = useState(0);
 
   const { toast } = useToast();
+  const { content } = useSiteContent();
+  const editableServices = activeItems(content.services);
+  const services = editableServices.length ? editableServices : activeItems(defaultSiteContent.services);
+  const primaryPhone = content.contact.phones[0];
+  const secondaryPhone = content.contact.phones[1];
+  const primaryEmail = content.contact.emails[0];
   const formRef = useRef(null);
   const servicesRef = useRef(null);
   const processRef = useRef(null);
@@ -52,7 +77,7 @@ const Services = () => {
   const servicesInView = useInView(servicesRef, { once: true, margin: '-80px' });
   const processInView = useInView(processRef, { once: true, margin: '-80px' });
 
-  const services = [
+  const fallbackServices = [
     {
       icon: Settings,
       title: 'Lift Installation',
@@ -139,6 +164,12 @@ const Services = () => {
       accent: 'from-slate-700 to-slate-500',
     },
   ];
+
+  useEffect(() => {
+    if (activeService >= services.length) {
+      setActiveService(0);
+    }
+  }, [activeService, services.length]);
 
   const processSteps = [
     {
@@ -290,7 +321,8 @@ const Services = () => {
     }
   };
 
-  const selected = services[activeService];
+  const selected = services[activeService] || services[0];
+  const SelectedIcon = getServiceIcon(selected.icon);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white">
@@ -388,8 +420,8 @@ const Services = () => {
           </div>
 
           <div className="flex flex-wrap justify-center gap-2 mb-10">
-            {services.map((service, index) => {
-              const Icon = service.icon;
+              {services.map((service, index) => {
+              const Icon = getServiceIcon(service.icon);
               const isActive = activeService === index;
               return (
                 <button
@@ -418,16 +450,16 @@ const Services = () => {
           >
             <div className="lg:col-span-5 relative min-h-[280px] lg:min-h-full">
               <img
-                src={selected.image}
+                src={resolveMediaUrl(selected.imageUrl)}
                 alt={selected.title}
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent" />
               <div className="absolute bottom-5 left-5 right-5">
                 <div
-                  className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${selected.accent} text-white text-xs font-bold shadow-lg mb-3`}
+                  className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${selected.accent || 'from-blue-600 to-sky-500'} text-white text-xs font-bold shadow-lg mb-3`}
                 >
-                  <selected.icon className="w-3.5 h-3.5" />
+                  <SelectedIcon className="w-3.5 h-3.5" />
                   {selected.short}
                 </div>
                 <h3 className="text-2xl font-extrabold text-white">{selected.title}</h3>
@@ -461,7 +493,7 @@ const Services = () => {
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <a
-                  href="tel:+918318326578"
+                  href={phoneHref(primaryPhone?.value)}
                   className="px-6 py-3.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-800 font-bold text-sm hover:bg-slate-200 transition-all flex items-center gap-2"
                 >
                   <Phone className="w-4 h-4 text-amber-600" />
@@ -473,7 +505,7 @@ const Services = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
             {services.map((service, index) => {
-              const Icon = service.icon;
+              const Icon = getServiceIcon(service.icon);
               const isActive = activeService === index;
               return (
                 <motion.button
@@ -491,7 +523,7 @@ const Services = () => {
                 >
                   <div
                     className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3 ${
-                      isActive ? 'bg-white/15' : `bg-gradient-to-br ${service.accent} text-white`
+                      isActive ? 'bg-white/15' : `bg-gradient-to-br ${service.accent || 'from-blue-600 to-sky-500'} text-white`
                     }`}
                   >
                     <Icon className={`w-5 h-5 ${isActive ? 'text-amber-300' : 'text-white'}`} />
@@ -576,26 +608,30 @@ const Services = () => {
                 </p>
                 <div className="space-y-2.5 pt-2">
                   <a
-                    href="tel:+918318326578"
+                    href={phoneHref(primaryPhone?.value)}
                     className="flex items-center gap-2 text-sm font-semibold text-white hover:text-amber-300 transition-colors"
                   >
                     <Phone className="w-4 h-4 text-amber-400" />
-                    +91 8318326578
+                    {primaryPhone?.value}
                   </a>
-                  <a
-                    href="tel:+918318503363"
-                    className="flex items-center gap-2 text-sm font-semibold text-white hover:text-amber-300 transition-colors"
-                  >
-                    <Phone className="w-4 h-4 text-amber-400" />
-                    +91 8318503363
-                  </a>
-                  <a
-                    href="mailto:himanchalenterprises6@gmail.com"
-                    className="flex items-center gap-2 text-sm font-semibold text-white hover:text-amber-300 transition-colors break-all"
-                  >
-                    <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-                    himanchalenterprises6@gmail.com
-                  </a>
+                  {secondaryPhone && (
+                    <a
+                      href={phoneHref(secondaryPhone.value)}
+                      className="flex items-center gap-2 text-sm font-semibold text-white hover:text-amber-300 transition-colors"
+                    >
+                      <Phone className="w-4 h-4 text-amber-400" />
+                      {secondaryPhone.value}
+                    </a>
+                  )}
+                  {primaryEmail && (
+                    <a
+                      href={emailHref(primaryEmail.value)}
+                      className="flex items-center gap-2 text-sm font-semibold text-white hover:text-amber-300 transition-colors break-all"
+                    >
+                      <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+                      {primaryEmail.value}
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -764,11 +800,11 @@ const Services = () => {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a
-              href="tel:+918318326578"
+                href={phoneHref(primaryPhone?.value)}
               className="px-7 py-3.5 rounded-xl bg-slate-950/25 border border-white/30 text-white font-bold text-sm hover:bg-slate-950/35 transition-all flex items-center gap-2"
             >
               <Phone className="w-4 h-4 text-amber-300" />
-              <span>+91 8318326578</span>
+              <span>{primaryPhone?.value}</span>
             </a>
           </div>
         </div>

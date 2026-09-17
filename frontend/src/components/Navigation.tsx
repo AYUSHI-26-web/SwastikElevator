@@ -1,12 +1,19 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Phone, Mail, Instagram, Linkedin, Facebook, ArrowRight } from 'lucide-react';
-import logo from '@/assets/LOGO.png';
+import { Menu, X, Phone, Mail, Instagram, ArrowRight, Globe2 } from 'lucide-react';
+import { emailHref, phoneHref, resolveMediaUrl, useSiteContent } from '@/lib/siteContent';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { content } = useSiteContent();
+  const primaryPhone = content.contact.phones[0];
+  const secondaryPhone = content.contact.phones[1];
+  const primaryEmail = content.contact.emails[0];
+  const logo = resolveMediaUrl(content.identity.logoUrl);
+  const unitPrefix = content.identity.unitLabel.includes(content.identity.companyName)
+    ? content.identity.unitLabel.replace(content.identity.companyName, '').trim()
+    : content.identity.unitLabel || 'A unit of';
 
   const navItems = [
     { path: '/', label: 'Home' },
@@ -14,14 +21,15 @@ const Navigation = () => {
     { path: '/services', label: 'Services' },
     { path: '/projects', label: 'Projects' },
     { path: '/gallery', label: 'Gallery' },
+    { path: '/#reviews', label: 'Reviews' },
     { path: '/contact', label: 'Contact' },
   ];
 
-  const socialLinks = [
-    { icon: Instagram, href: 'https://www.instagram.com/swastik_elevetor_kanpur?igsh=MWltcDQxc2J4YXEzeQ==', label: 'Instagram' },
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Facebook, href: '#', label: 'Facebook' },
-  ];
+  const socialLinks = content.socialLinks.map((social) => ({
+    icon: social.platform.toLowerCase().includes('instagram') ? Instagram : Globe2,
+    href: social.url,
+    label: social.label || social.platform,
+  }));
 
   return (
     <header className="sticky top-0 z-50 shadow-md">
@@ -33,36 +41,40 @@ const Navigation = () => {
           {/* Left Contact & Hotline Links */}
           <div className="flex flex-wrap items-center gap-4 text-xs font-medium">
             <a
-              href="tel:+918318326578"
+              href={phoneHref(primaryPhone?.value)}
               className="flex items-center gap-1.5 hover:text-amber-400 transition-colors"
             >
               <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>+91 8318326578</span>
+              <span>{primaryPhone?.value}</span>
             </a>
 
-            <span className="hidden sm:inline text-slate-700">•</span>
+            {secondaryPhone && <span className="hidden sm:inline text-slate-700">|</span>}
 
-            <a
-              href="tel:+918318503363"
-              className="flex items-center gap-1.5 hover:text-amber-400 transition-colors"
-            >
-              <Phone className="w-3.5 h-3.5 text-amber-400" />
-              <span>+91 8318503363</span>
-            </a>
+            {secondaryPhone && (
+              <a
+                href={phoneHref(secondaryPhone.value)}
+                className="flex items-center gap-1.5 hover:text-amber-400 transition-colors"
+              >
+                <Phone className="w-3.5 h-3.5 text-amber-400" />
+                <span>{secondaryPhone.value}</span>
+              </a>
+            )}
 
-            <span className="hidden md:inline text-slate-700">•</span>
+            {primaryEmail && <span className="hidden md:inline text-slate-700">|</span>}
 
-            <a
-              href="mailto:himanchalenterprises6@gmail.com"
-              className="hidden md:flex items-center gap-1.5 hover:text-blue-400 transition-colors"
-            >
-              <Mail className="w-3.5 h-3.5 text-blue-400" />
-              <span>himanchalenterprises6@gmail.com</span>
-            </a>
+            {primaryEmail && (
+              <a
+                href={emailHref(primaryEmail.value)}
+                className="hidden md:flex items-center gap-1.5 hover:text-blue-400 transition-colors"
+              >
+                <Mail className="w-3.5 h-3.5 text-blue-400" />
+                <span>{primaryEmail.value}</span>
+              </a>
+            )}
 
             <span className="hidden lg:inline-flex items-center gap-1.5 text-[11px] text-emerald-400 font-semibold bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800/40">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>24/7 Breakdown Response</span>
+              <span>{content.contact.responseText}</span>
             </span>
           </div>
 
@@ -97,16 +109,18 @@ const Navigation = () => {
             
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center space-x-3"
-                aria-label="Swastik Elevator - A unit of Himanchal Enterprises"
+              <div
+                className="flex items-center space-x-3 transition-transform duration-200 group-hover:scale-[1.02]"
+                aria-label={`${content.identity.brandName} - ${content.identity.unitLabel}`}
               >
                 <div className="relative p-1 bg-gradient-to-br from-blue-600 via-sky-600 to-amber-500 rounded-2xl shadow-md">
                   <img
                     src={logo}
-                    alt="Swastik Elevator Logo"
+                    alt={`${content.identity.brandName} Logo`}
+                    width="160"
+                    height="106"
+                    decoding="async"
+                    fetchPriority="high"
                     className="w-12 h-12 rounded-xl object-contain bg-white p-1"
                   />
                 </div>
@@ -114,23 +128,30 @@ const Navigation = () => {
                 {/* Text Section */}
                 <div className="leading-tight">
                   <span className="block text-xl font-extrabold bg-gradient-to-r from-blue-700 via-sky-600 to-amber-500 bg-clip-text text-transparent">
-                    Swastik Elevator
+                    {content.identity.brandName}
                   </span>
                   <span className="block text-xs font-semibold tracking-wider text-slate-500 dark:text-slate-400">
-                    A unit of <span className="font-bold text-blue-900 dark:text-sky-400">Himanchal Enterprises</span>
+                    {unitPrefix}{' '}
+                    <span className="font-bold text-blue-900 dark:text-sky-400">
+                      {content.identity.companyName}
+                    </span>
                   </span>
                 </div>
-              </motion.div>
+              </div>
             </Link>
 
             {/* Clean Desktop Navigation Links */}
             <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
               {navItems.map((item) => {
-                const isActive = location.pathname === item.path;
+                const isReviewsLink = item.path === '/#reviews';
+                const isActive = isReviewsLink
+                  ? location.pathname === '/' && location.hash === '#reviews'
+                  : location.pathname === item.path;
                 return (
                   <Link
                     key={item.path}
                     to={item.path}
+                    aria-current={isActive ? 'page' : undefined}
                     className={`relative px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
                       isActive
                         ? 'text-blue-700 dark:text-sky-400 bg-blue-50/80 dark:bg-slate-800/80 shadow-xs'
@@ -139,11 +160,7 @@ const Navigation = () => {
                   >
                     {item.label}
                     {isActive && (
-                      <motion.div
-                        layoutId="activeIndicator"
-                        className="absolute bottom-0 left-3 right-3 h-0.5 bg-gradient-to-r from-blue-600 to-amber-500 rounded-full"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
+                      <div className="absolute bottom-0 left-3 right-3 h-0.5 bg-gradient-to-r from-blue-600 to-amber-500 rounded-full" />
                     )}
                   </Link>
                 );
@@ -164,6 +181,9 @@ const Navigation = () => {
             {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
+              aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
               className="md:hidden p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition-colors"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -171,47 +191,47 @@ const Navigation = () => {
           </div>
 
           {/* Mobile Navigation Dropdown */}
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="md:hidden py-4 border-t border-slate-200 dark:border-slate-800"
-              >
-                <div className="flex flex-col space-y-2">
-                  {navItems.map((item) => {
-                    const isActive = location.pathname === item.path;
-                    return (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        onClick={() => setIsOpen(false)}
-                        className={`block px-4 py-2.5 rounded-xl font-medium text-sm transition-colors ${
-                          isActive
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-
-                  <div className="pt-3 mt-2 border-t border-slate-200 dark:border-slate-800 space-y-2">
+          {isOpen && (
+            <div
+              id="mobile-navigation"
+              className="md:hidden py-4 border-t border-slate-200 dark:border-slate-800"
+            >
+              <div className="flex flex-col space-y-2">
+                {navItems.map((item) => {
+                  const isReviewsLink = item.path === '/#reviews';
+                  const isActive = isReviewsLink
+                    ? location.pathname === '/' && location.hash === '#reviews'
+                    : location.pathname === item.path;
+                  return (
                     <Link
-                      to="/contact"
+                      key={item.path}
+                      to={item.path}
                       onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs shadow-md"
+                      aria-current={isActive ? 'page' : undefined}
+                      className={`block px-4 py-2.5 rounded-xl font-medium text-sm transition-colors ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
                     >
-                      <span>Book Free Site Survey</span>
-                      <ArrowRight className="w-4 h-4" />
+                      {item.label}
                     </Link>
-                  </div>
+                  );
+                })}
+
+                <div className="pt-3 mt-2 border-t border-slate-200 dark:border-slate-800 space-y-2">
+                  <Link
+                    to="/contact"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center justify-center space-x-2 px-4 py-3 rounded-xl bg-amber-500 text-slate-950 font-extrabold text-xs shadow-md"
+                  >
+                    <span>Book Free Site Survey</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 

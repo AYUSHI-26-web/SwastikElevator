@@ -1,11 +1,26 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Calculator, ArrowRight, Building, ShieldCheck, Zap, CheckCircle2 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+type ServiceCategory = 'installation' | 'amc' | 'modernization';
+type BuildingType = 'residential' | 'commercial' | 'hospital';
+
+const serviceOptions: Array<{ id: ServiceCategory; label: string; icon: LucideIcon }> = [
+  { id: 'installation', label: 'New Lift', icon: Building },
+  { id: 'amc', label: 'AMC Service', icon: ShieldCheck },
+  { id: 'modernization', label: 'Modernize', icon: Zap },
+];
+
+const buildingOptions: Array<{ id: BuildingType; label: string }> = [
+  { id: 'residential', label: 'Residential' },
+  { id: 'commercial', label: 'Commercial' },
+  { id: 'hospital', label: 'Hospital/Goods' },
+];
+
 const ElevatorEstimator = () => {
-  const [serviceCategory, setServiceCategory] = useState<'installation' | 'amc' | 'modernization'>('installation');
-  const [buildingType, setBuildingType] = useState<'residential' | 'commercial' | 'hospital'>('residential');
+  const [serviceCategory, setServiceCategory] = useState<ServiceCategory>('installation');
+  const [buildingType, setBuildingType] = useState<BuildingType>('residential');
   const [floors, setFloors] = useState<number>(4);
 
   return (
@@ -15,12 +30,7 @@ const ElevatorEstimator = () => {
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600/10 border border-blue-600/20 text-blue-700 text-xs font-semibold uppercase tracking-wider mb-4">
             <Calculator className="w-4 h-4 text-amber-600" />
             <span>Instant Estimator</span>
@@ -31,7 +41,7 @@ const ElevatorEstimator = () => {
           <p className="text-slate-600 max-w-2xl mx-auto text-sm sm:text-base">
             Select your building parameters and request a free on-site technical survey for new installation, AMC maintenance, or modernization.
           </p>
-        </motion.div>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-8 shadow-xl">
           {/* Controls */}
@@ -42,15 +52,12 @@ const ElevatorEstimator = () => {
                 1. Select Service Required
               </label>
               <div className="grid grid-cols-3 gap-3">
-                {[
-                  { id: 'installation', label: 'New Lift', icon: Building },
-                  { id: 'amc', label: 'AMC Service', icon: ShieldCheck },
-                  { id: 'modernization', label: 'Modernize', icon: Zap },
-                ].map((item) => (
+                {serviceOptions.map((item) => (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => setServiceCategory(item.id as any)}
+                    onClick={() => setServiceCategory(item.id)}
+                    aria-pressed={serviceCategory === item.id}
                     className={`flex flex-col items-center justify-center p-3 rounded-2xl border text-sm font-semibold transition-all ${
                       serviceCategory === item.id
                         ? 'bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-600/30 scale-105'
@@ -70,15 +77,12 @@ const ElevatorEstimator = () => {
                 2. Building Category
               </label>
               <div className="grid grid-cols-3 gap-3">
-                {[
-                  { id: 'residential', label: 'Residential' },
-                  { id: 'commercial', label: 'Commercial' },
-                  { id: 'hospital', label: 'Hospital/Goods' },
-                ].map((item) => (
+                {buildingOptions.map((item) => (
                   <button
                     key={item.id}
                     type="button"
-                    onClick={() => setBuildingType(item.id as any)}
+                    onClick={() => setBuildingType(item.id)}
+                    aria-pressed={buildingType === item.id}
                     className={`py-2.5 px-3 rounded-xl border text-xs sm:text-sm font-medium transition-all ${
                       buildingType === item.id
                         ? 'bg-amber-500/15 border-amber-500 text-amber-800 font-bold'

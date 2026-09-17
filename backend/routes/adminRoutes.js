@@ -7,9 +7,9 @@ const {
   getAdminProfile,
 } = require('../controllers/adminAuthController');
 
-const { adminAuth } = require('../utils/adminAuth');
+const { adminAuth, allowInitialAdminOrAuthenticatedAdmin } = require('../utils/adminAuth');
 
-router.post('/register', registerAdmin);
+router.post('/register', allowInitialAdminOrAuthenticatedAdmin, registerAdmin);
 router.post('/login', loginAdmin);
 router.get('/profile', adminAuth, getAdminProfile);
 

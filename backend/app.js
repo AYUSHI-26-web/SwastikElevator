@@ -7,13 +7,15 @@ const opsRoutes = require('./routes/opsRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const contactInfoRoutes = require('./routes/contactInfoRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const siteContentRoutes = require('./routes/siteContentRoutes');
 const { getEmailAuthStatus } = require('./services/emailService');
 const { getEmailQueueStats } = require('./services/emailQueueService');
 
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '25mb' }));
 
 app.use('/api/contact', contactRoutes);
 app.use('/api/auth', authRoutes);
@@ -21,6 +23,8 @@ app.use('/api/ops', opsRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/contact-info', contactInfoRoutes);
+app.use('/api/reviews', reviewRoutes);
+app.use('/api/site-content', siteContentRoutes);
 
 app.get('/health', async (req, res) => {
   let queueStats = { pending: 0, processing: 0, sent: 0, failed: 0 };
